@@ -1,0 +1,105 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "Vineel's personal knowledge base — articles, notes & ideas." } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title} · V/WIKI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/styles/global.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-inner">
+      <a href="/" class="nav-logo">V/WIKI</a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Articles</a>
+        <a href="/about" class="nav-link">About</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-logo">V/WIKI</span>
+      <span class="footer-note">A personal knowledge base · Built with Astro</span>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  background: rgba(12, 12, 14, 0.92);
+  backdrop-filter: blur(12px);
+}
+.nav-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  transition: opacity 0.2s;
+}
+.nav-logo:hover { opacity: 0.7; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-link {
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--text); }
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 6rem;
+  padding: 2rem 0;
+}
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-dim);
+}
+.footer-note {
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+</style>

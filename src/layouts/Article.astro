@@ -1,0 +1,186 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  date?: string;
+  tags?: string[];
+  source?: string;
+  sourceUrl?: string;
+}
+const { title, description, date, tags = [], source, sourceUrl } = Astro.props;
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description ?? title} />
+  <title>{title} · V/WIKI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/styles/global.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-inner">
+      <a href="/" class="nav-logo">V/WIKI</a>
+      <div class="nav-links">
+        <a href="/" class="nav-link">← All Articles</a>
+      </div>
+    </nav>
+  </header>
+
+  <article class="article-wrap">
+    <header class="article-header">
+      {tags.length > 0 && (
+        <div class="tag-row">
+          {tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      )}
+      <h1 class="article-title">{title}</h1>
+      {description && <p class="article-desc">{description}</p>}
+      <div class="article-meta">
+        {date && <span class="meta-date">{formatDate(date)}</span>}
+        {source && (
+          <span class="meta-source">
+            Source: {sourceUrl
+              ? <a href={sourceUrl} target="_blank" rel="noopener">{source} ↗</a>
+              : source}
+          </span>
+        )}
+      </div>
+      <div class="header-rule"></div>
+    </header>
+
+    <div class="article-body">
+      <slot />
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a href="/" class="back-link">← Back to all articles</a>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid var(--border);
+  background: rgba(12,12,14,0.92);
+  backdrop-filter: blur(12px);
+}
+.nav-inner {
+  max-width: 900px; margin: 0 auto; padding: 0 2rem;
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.15em;
+  color: var(--accent); transition: opacity 0.2s;
+}
+.nav-logo:hover { opacity: 0.7; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-link {
+  font-size: 0.8rem; letter-spacing: 0.06em; color: var(--text-muted);
+  text-transform: uppercase; transition: color 0.2s;
+}
+.nav-link:hover { color: var(--text); }
+
+.article-wrap {
+  max-width: 720px; margin: 0 auto; padding: 4rem 2rem 6rem;
+}
+.article-header { margin-bottom: 3rem; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+.tag {
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent-dim);
+  background: var(--tag-bg); border: 1px solid var(--border);
+  padding: 0.2rem 0.6rem; border-radius: 2px;
+}
+
+.article-title {
+  font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700; line-height: 1.15; color: var(--text);
+  margin-bottom: 1rem;
+}
+.article-desc {
+  font-size: 1.1rem; color: var(--text-muted); font-weight: 300;
+  line-height: 1.6; margin-bottom: 1.25rem;
+}
+.article-meta {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);
+}
+.article-meta a { color: var(--accent-dim); transition: color 0.2s; }
+.article-meta a:hover { color: var(--accent); }
+.header-rule {
+  height: 1px; background: var(--border); margin-top: 2rem;
+}
+
+/* ── Article body typography ── */
+.article-body { font-size: 1.05rem; line-height: 1.8; }
+
+.article-body h1, .article-body h2 {
+  font-family: var(--font-display);
+  font-weight: 700; color: var(--text);
+  margin: 3rem 0 1rem; line-height: 1.2;
+}
+.article-body h1 { font-size: 1.9rem; }
+.article-body h2 { font-size: 1.45rem; }
+.article-body h3 {
+  font-size: 1rem; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--accent-dim);
+  margin: 2.5rem 0 0.75rem;
+}
+
+.article-body p { margin-bottom: 1.4rem; color: var(--text); }
+
+.article-body blockquote {
+  border-left: 3px solid var(--blockquote-bar);
+  margin: 2rem 0;
+  padding: 0.75rem 0 0.75rem 1.75rem;
+  background: var(--bg-card);
+  border-radius: 0 4px 4px 0;
+}
+.article-body blockquote p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--accent);
+  margin: 0;
+}
+
+.article-body hr {
+  border: none; border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+.article-body strong { font-weight: 500; color: var(--text); }
+.article-body em { font-style: italic; }
+.article-body a { color: var(--accent-dim); border-bottom: 1px solid var(--border-bright); transition: color 0.2s, border-color 0.2s; }
+.article-body a:hover { color: var(--accent); border-color: var(--accent); }
+
+.article-body ul, .article-body ol {
+  padding-left: 1.5rem; margin-bottom: 1.4rem;
+}
+.article-body li { margin-bottom: 0.4rem; }
+
+/* footnote-style source line */
+.article-body p:last-child:has(em) {
+  font-size: 0.8rem; color: var(--text-faint); font-family: var(--font-mono);
+}
+
+.site-footer { border-top: 1px solid var(--border); padding: 2rem 0; }
+.footer-inner { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+.back-link { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; transition: color 0.2s; }
+.back-link:hover { color: var(--text); }
+</style>
